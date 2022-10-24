@@ -1,75 +1,44 @@
-'use strict';
+"use strict";
 
-const product = document.querySelector(".items");
+const productContainer = document.querySelector(".items");
 
-function addProduct() {
+
+function addProduct(product) {
+
   const linkProduct = document.createElement("a"); //Ajout lien de l'article
-  linkProduct.href = "./product.html?id=42";
-  product.appendChild(linkProduct); // ajout en tant que enfant de product
+  linkProduct.href = "./product.html?id=" + product._id;
 
-    const articleProduct = document.createElement("article");
-    linkProduct.appendChild(articleProduct);
+  const articleProduct = document.createElement("article");
+  linkProduct.appendChild(articleProduct);
 
-      const imgProduct = document.createElement("img");
-      imgProduct.src = "";
-      imgProduct.alt = "Lorem ipsum dolor sit amet, Kanap name1";
-      articleProduct.appendChild(imgProduct);
+  const imgProduct = document.createElement("img");
+  imgProduct.src = product.imageUrl;
+  imgProduct.alt = product.altTxt;
+  articleProduct.appendChild(imgProduct);
 
-      const productName = document.createElement("h3");
-      productName.textContent = "Kanap name1";
-      articleProduct.appendChild(productName);
-      productName.classList.add(".itemsArticleH3");
+  const productName = document.createElement("h3");
+  productName.textContent = product.name;
+  articleProduct.appendChild(productName);
+  productName.classList.add("productName");
 
-      const productDescription = document.createElement("p");
-      productDescription.textContent = "Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.";
-      articleProduct.appendChild(productDescription);
-      productDescription.classList.add(".itemsArticleP");
+  const productDescription = document.createElement("p");
+  productDescription.textContent = product.description
+  articleProduct.appendChild(productDescription);
+  productDescription.classList.add("productDescription");
+
+  productContainer.appendChild(linkProduct); // Ajout en tant que enfant de product
 }
-addProduct() //appel de la fonction
-
-
-/*
-//Ajout balise img du produit 
-function ajoutIMG() {
-  let nouveauIMG = document.createElement("img");
-  nouveauIMG.src = "../images/logo.png";
-  nouveauIMG.alt = "Lorem ipsum dolor sit amet, Kanap name1"
-  produit.appendChild(nouveauIMG);
-  nouveauIMG.classList.add("itemsArticleImg");
-  
-}
-ajoutIMG()  //Appel de la fonction a ne pas oublier
 
 
 
-//Ajout balise lien du produit
-function ajoutLien() {
-  const nouveauLien = document.createElement("a");
-  nouveauLien.textContent = "Lien"
-  nouveauLien.href = "./product.html?id=42";
-  produit.appendChild(nouveauLien);
-  
-}
-ajoutLien() //Appel de la fonction a ne pas oublier
+
+fetch("http://localhost:3000/api/products")  //Appel de l'API
+.then(response => response.json())  //Cela nous retourne la response
+.then(products => {
+  for (const product of products){  //On créé la boucle pour appeler les données du produit
+    addProduct(product)
+  }
+})
 
 
 
-//Ajout balise h3 du produit
-function ajoutH3() {
-  const nouveauH3 = document.createElement("h3");
-  nouveauH3.textContent = "Kanap name1";
-  produit.appendChild(nouveauH3);
-}
-ajoutH3()  //Appel de la fonction a ne pas oublier
-
-
-
-//Ajout balise p du produit
-function ajoutElement() {
-  const nouveauParagraphe = document.createElement("p");
-  nouveauParagraphe.textContent = "Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.";
-  produit.appendChild(nouveauParagraphe);
-  nouveauParagraphe.classList.add("itemsArticleP");
-}
-ajoutElement()  //Appel de la fonction a ne pas oublier
-*/
