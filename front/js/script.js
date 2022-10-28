@@ -1,8 +1,9 @@
 "use strict";
 
+//Déclaration variable(s) utilisée(s)
 const productContainer = document.querySelector(".items");
 
-
+//Fonction pour créer les blises pour ajout produit
 function addProduct(product) {
 
   const linkProduct = document.createElement("a"); //Ajout lien de l'article
