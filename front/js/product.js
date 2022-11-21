@@ -91,4 +91,5 @@ addToCartButton.addEventListener("click", () => {
     cart.push(product);
   }
   localStorage.setItem("cart", JSON.stringify(cart));
+  alert('Produit ajouté au panier')
 });
