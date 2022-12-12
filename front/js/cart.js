@@ -1,9 +1,45 @@
 "use strict";
 
-// Récupère le panier dans le local storage
-const cartJSON = localStorage.getItem("cart");
-const cart = cartJSON ? JSON.parse(cartJSON) : [];
-console.log(cart);
+
+class Cart {
+  get() {
+    // Récupère le panier dans le local storage
+    const cartJSON = localStorage.getItem("cart");
+    const cart = cartJSON ? JSON.parse(cartJSON) : [];
+    console.log(cart);
+    return cart;
+  }
+
+  save(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    this.computeTotals(cart);
+    
+  }
+  
+  update(productToUpdate, selectQuantity) {
+    console.log(this, productToUpdate, selectQuantity);
+    const newQuantity = parseInt(selectQuantity.value);
+    const cart = this.get()
+    for (const productFromCart of cart) {
+      let isProductToUpdate =
+      productFromCart.id === productToUpdate.id &&
+      productFromCart.color === productToUpdate.color;
+      if (isProductToUpdate) {
+        productFromCart.quantity = newQuantity
+      }
+    }
+    this.save(cart)
+
+  }
+
+  computeTotals(cart) {
+    //recalcule total et quantité pour mettre a jours le dom
+  }
+}
+
+let cartManager = new Cart();
+
+let cart = cartManager.get();
 
 fetch("http://localhost:3000/api/products") //Appel de l'API
   .then((response) => response.json()) //Cela nous retourne la response
@@ -23,6 +59,7 @@ fetch("http://localhost:3000/api/products") //Appel de l'API
 const cartProduct = document.getElementById("cart__items");
 
 function addProductToCart(product) {
+  // refaire le nomage
   const articleProduct = document.createElement("article");
   articleProduct.classList.add("cart__item");
   cartProduct.appendChild(articleProduct);
@@ -76,12 +113,40 @@ function addProductToCart(product) {
   selectQuantityProduct.name = "itemQuantity";
   selectQuantityProduct.value = product.quantity;
   contentSettingsQuantity.appendChild(selectQuantityProduct);
+    selectQuantityProduct.addEventListener('change', cartManager.update.bind(cartManager, product, selectQuantityProduct));
+
 
   const deleteQuantityProduct = document.createElement("div");
   deleteQuantityProduct.classList.add("cart__item__content__settings__delete");
   contentSettings.appendChild(deleteQuantityProduct);
 
-  const deleteItem = document.createElement("p");
-  deleteItem.textContent = "Supprimer";
-  deleteQuantityProduct.appendChild(deleteItem);
+  const deleteItemElt = document.createElement("p");
+  deleteItemElt.textContent = "Supprimer";
+  deleteItemElt.classList.add("deleteItem");
+  deleteItemElt.addEventListener(
+    "click",
+    deleteItem.bind(articleProduct, product)
+  );
+  deleteQuantityProduct.appendChild(deleteItemElt);
+
 }
+
+function deleteItem(productToDelete) {
+  console.log(productToDelete);
+  let cart = cartManager.get();
+
+  //Supprimer élément ici
+  cart = cart.filter((productFromCart) => {
+    let isProductToDelete =
+      productFromCart.id === productToDelete.id &&
+      productFromCart.color === productToDelete.color;
+    return !isProductToDelete;
+  });
+
+  cartManager.save(cart); //Sauvegarde le nouveau panier (localStorage)
+
+  this.remove(); //supprime la ligne du DOM
+}
+
+//evenement changement de quantité (input)
+
