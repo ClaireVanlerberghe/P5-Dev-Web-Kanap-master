@@ -32,8 +32,22 @@ class Cart {
 
   }
 
-  computeTotals(cart) {
-    //recalcule total et quantité pour mettre a jours le dom
+ async computeTotals(cart) { //recalcule total et quantité pour mettre a jours le dom
+    const totalQuantityElt = document.getElementById ("totalQuantity");
+    const totalPriceElt = document.getElementById("totalPrice");
+    let quantityTotal = 0;
+    let priceTotal = 0;
+
+    for (const product of cart) {
+      const response = await fetch("http://localhost:3000/api/products/"+product.id)
+      const apiProduct = await response.json()
+      quantityTotal += product.quantity;
+      priceTotal += apiProduct.price*product.quantity
+      
+    }
+    totalQuantityElt.innerText = quantityTotal
+    totalPriceElt.innerText = priceTotal
+    
   }
 }
 
@@ -53,7 +67,9 @@ fetch("http://localhost:3000/api/products") //Appel de l'API
 
       //fusion api et localstorage
       addProductToCart({ ...foundProduct, ...cartProduct });
+   
     }
+    cartManager.computeTotals(cart);
   });
 
 const cartProduct = document.getElementById("cart__items");
